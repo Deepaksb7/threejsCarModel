@@ -1,9 +1,14 @@
 
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 
 export function Car(props) {
   const { nodes, materials } = useGLTF('/models/cars/chevrolet_corvette_c7.glb')
+  const flWheel = useRef()
+  const rlWheel = useRef()
+  const rrWheel = useRef()
+  const frWheel = useRef()
   
   React.useEffect(() => {
     Object.values(materials).forEach((material) => {
@@ -11,9 +16,19 @@ export function Car(props) {
     });
   }, [materials]);
 
+  useFrame((state, delta) => {
+    let t = state.clock.getElapsedTime()
+
+    if (flWheel.current) flWheel.current.rotation.x = t * 2 + 2.199
+    if (rlWheel.current) rlWheel.current.rotation.x = t * 2 + 2.199
+    if (rrWheel.current) rrWheel.current.rotation.x = t * 2 - 2.199
+    if (frWheel.current) frWheel.current.rotation.x = t * 2 - 2.199
+  })
+
   return (
     <group {...props} dispose={null} scale={0.005}>
       <group
+        ref={flWheel}
         position={[160.137, 76.367, 268.656]}
         rotation={[2.199, Math.PI / 2, 0]}
         scale={[100, 100, 101.808]}>
@@ -52,6 +67,7 @@ export function Car(props) {
         />
       </group>
       <group
+        ref={rlWheel}
         position={[160.137, 76.367, -270.477]}
         rotation={[2.199, Math.PI / 2, 0]}
         scale={[100, 100, 101.808]}>
@@ -90,6 +106,7 @@ export function Car(props) {
         />
       </group>
       <group
+        ref={rrWheel}
         position={[-159.931, 76.367, -270.477]}
         rotation={[-2.199, -Math.PI / 2, 0]}
         scale={[100, 100, 101.808]}>
@@ -128,6 +145,7 @@ export function Car(props) {
         />
       </group>
       <group
+        ref={frWheel}
         position={[-159.931, 76.367, 268.656]}
         rotation={[-2.199, -Math.PI / 2, 0]}
         scale={[100, 100, 101.808]}>

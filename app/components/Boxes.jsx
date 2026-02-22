@@ -8,19 +8,33 @@ export function Box( {color }){
     const [xRotSpeed] = useState(()=> Math.random())
     const [yRotSpeed] = useState(()=> Math.random())
     const [scale]  = useState(()=> Math.pow(Math.random(), 2.0) * 0.5 + 0.05)
-    const [position, setPosition] = useState(resetPostion())
+    const [position, setPosition] = useState(getInitialPosition())
+    const time = useRef(0)
 
-    function resetPostion(){
-        let v = new Vector3((Math.random() * 2 - 1) * 3, Math.random() * 2.5 + 0.1, (Math.random() * 2 - 1) * 15)
+    function getInitialPosition(){
+        let v = new Vector3((Math.random() * 2 - 1)* 3, Math.random() * 2.5 + 0.1 , (Math.random()* 2 -1 ) * 15)
         if (v.x < 0) v.x -= 1.75
         if (v.x > 0) v.x += 1.75
-
-        // setPosition(v)
         return v
     }
 
+    function resetPostion(){
+        let v = new Vector3((Math.random() * 2 - 1) * 3, Math.random() * 2.5 + 0.1, Math.random() * 10 + 10 )
+        if (v.x < 0) v.x -= 1.75
+        if (v.x > 0) v.x += 1.75
+        setPosition(v)
+    }
+
     useFrame((state,delta)=>{
-        box.current.position.set(position.x,position.y,position.z)
+        time.current += delta * 1.2
+        let newZ = position.z - time.current
+
+        if (newZ < -10){
+            resetPostion()
+            time.current = 0
+        }
+
+        box.current.position.set(position.x,position.y,newZ)
         box.current.rotation.x += delta * xRotSpeed
         box.current.rotation.y += delta * yRotSpeed
     },[xRotSpeed,yRotSpeed,position])

@@ -6,10 +6,12 @@ export function Ring(){
     const itemRef = useRef([])
 
     useFrame((state)=>{
+        let elasped = state.clock.getElapsedTime()
+
         for (let i = 0 ; i < itemRef.current.length; i++){
             let mesh = itemRef.current[i]
 
-            let z = (i - 7) * 3.5
+            let z = (i - 7) * 3.5 + ((elasped * 0.4) % 3.5) * 2
             mesh.position.set(0, 0, -z)
 
             let dist = Math.abs(z)
